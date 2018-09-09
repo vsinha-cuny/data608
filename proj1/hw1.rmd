@@ -1,0 +1,157 @@
+---
+title: "Data608 Project 1"
+author: "Vikas Sinha"
+date: "September 8, 2018"
+output:
+  html_document: default
+  pdf_document: default
+  html_notebook: default
+editor_options: 
+  chunk_output_type: console
+---
+
+**Principles of Data Visualization and Introduction to ggplot2**
+
+Read in data regarding the 5,000 fastest growing companies in the US, as compiled by Inc. magazine:
+
+
+```{r, message=F, warning=F}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(scales)
+
+
+inc <- read.csv(url("https://raw.githubusercontent.com/vsinha-cuny/data608/master/proj1/inc5000_data.csv"))
+
+```
+
+
+Preview this data:
+
+```{r}
+
+head(inc)
+
+```
+```{r}
+
+summary(inc)
+
+```
+
+
+Think a bit on what these summaries mean. Use the space below to add some more relevant non-visual exploratory information you think helps you understand this data:
+
+```{r, message=F, warning=F}
+library(Hmisc)
+
+describe(inc)
+
+detach(package:Hmisc)
+```
+
+
+## Question 1
+
+Create a graph that shows the distribution of companies in the dataset by State (i.e. how many are in each state). There are a lot of States, so consider which axis you should use. This visualization is ultimately going to be consumed on a 'portrait' oriented screen (i.e. taller than wide), which should further guide your layout choices.
+
+
+```{r, message=F, warning=F, fig.height = 8}
+
+# Reference: http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Dot%20Plot
+
+
+library(ggplot2)
+library(scales)
+
+
+states = data.frame(group_by_(inc, "State") %>% summarise(n()), stringsAsFactors = F)
+names(states) = c("State", "Companies")
+states = states[order(states$Companies, decreasing=T),]
+
+
+# Plot
+theme_set(theme_classic())
+ggplot(states, aes(x=Companies, y=State)) + 
+  geom_point(col="tomato2", size=2) +   # Draw points
+  geom_segment(aes(x=min(Companies), 
+                   xend=max(Companies),
+                   y=State, 
+                   yend=State),
+               linetype="dashed", 
+               size=0.2) +   # Draw dashed lines
+  labs(title="Dot Plot", 
+       subtitle="State Vs No. of Companies", 
+       caption="source: inc")
+
+
+```
+
+
+## Question 2
+
+Lets dig in on the state with the 3rd most companies in the data set. Imagine you work for the state and are interested in how many people are employed by companies in different industries. Create a plot that shows the average and/or median employment by industry for companies in this state (only use cases with full data, use R's `complete.cases()` function.) In addition to this, your graph should show how variable the ranges are, and you should deal with outliers.
+
+```{r, message=F, warning=F}
+
+
+# Select the state with the 3rd most companies in the data set.
+sel3 = states[3,]
+sel_state = as.character(sel3["State"][1,])
+print(sel_state)
+
+state3 = inc %>% filter(State == sel_state)
+state3 = state3[complete.cases(state3),]
+
+industry3 = state3 %>% select(Employees, Industry) 
+industry3 = industry3 %>% group_by(Industry) %>% summarize(mean_employment=mean(Employees))
+industry3 = industry3[order(industry3$mean_employment, decreasing = T),]
+
+# Plot
+theme_set(theme_classic())
+ggplot(industry3, aes(x=mean_employment, y=Industry)) + 
+  geom_point(col="tomato2", size=2) +   # Draw points
+  geom_segment(aes(x=min(mean_employment), 
+                   xend=max(mean_employment),
+                   y=Industry,
+                   yend=Industry),
+               linetype="dashed", 
+               size=0.2) +   # Draw dashed lines
+  labs(title="Dot Plot", 
+       subtitle="Industry Vs Mean Employment for NY",
+       caption="source: inc")
+
+
+```
+
+
+## Question 3
+
+Now imagine you work for an investor and want to see which industries generate the most revenue per employee. Create a chart that makes this information clear. Once again, the distribution per industry should be shown.
+
+```{r, message=F, warning=F}
+
+rvn = inc %>% select(Industry, Revenue, Employees)
+rvn = rvn[complete.cases(rvn),]
+rvn = rvn %>% group_by(Industry) %>% summarize(tot_rev = sum(Revenue), tot_emp = sum(Employees))
+rvn$rev_per_emp = rvn$tot_rev / rvn$tot_emp
+rvn = rvn[order(rvn$rev_per_emp, decreasing = T),]
+
+# Plot
+theme_set(theme_classic())
+ggplot(rvn, aes(x=rev_per_emp, y=Industry)) +
+  geom_point(col="tomato2", size=2) +   # Draw points
+  geom_segment(aes(x=min(rev_per_emp), 
+                   xend=max(rev_per_emp),
+                   y=Industry,
+                   yend=Industry),
+               linetype="dashed", 
+               size=0.2) +   # Draw dashed lines
+  labs(title="Dot Plot", 
+       subtitle="Industry Vs Revenue per Employee",
+       caption="source: inc")
+
+```
+
+
