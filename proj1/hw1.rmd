@@ -3,8 +3,8 @@ title: "Data608 Project 1"
 author: "Vikas Sinha"
 date: "September 8, 2018"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   html_notebook: default
 editor_options: 
   chunk_output_type: console
