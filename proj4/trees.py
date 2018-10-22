@@ -9,8 +9,12 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 
-trees = pd.read_csv("2015_Street_Tree_Census_-_Tree_Data.csv")
-tree=trees[["tree_id", "created_at", "spc_common", "borough", "health", "steward"]].copy()
+csv_file = "2015_Street_Tree_Data_Reduced.csv"
+csv_url = "https://raw.githubusercontent.com/vsinha-cuny/data608/master/proj4/" + csv_file
+print("Reading csv file ...")
+trees = pd.read_csv(csv_url)
+print("done.")
+tree=trees[["tree_id", "spc_common", "borough", "health", "steward"]].copy()
 tree.dropna(inplace=True)
 del trees
 
@@ -19,10 +23,8 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 def generate_graph(df, max_rows=80):
     x1 = df.health.unique()
-    print(x1)
     d1 = df[(df.health==x1[0])]
     d2 = df[(df.health==x1[1])]
-    print(d2)
     d3 = df[(df.health==x1[2])]
 
     trace1 = go.Scatter(
