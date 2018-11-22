@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!--
+    Data 608 Project 5
+    Vikas Sinha
+    11/19/2018
+-->
+
+<head>
+<title>Intro to JS in a Browser</title>
+</head>
+
+<body>
+<script type="text/javascript">
+
+function reverse_string() {
+    
+    var str_fld = document.getElementById("word").value;
+    var str_array = str_fld.split("");
+    var rev_array = str_array.reverse();
+    var rev_str = rev_array.join("");
+
+    var result = "<tr><td>Reversed word: </td><td>" + rev_str + "</td></tr>";
+    document.getElementById("rev_word").innerHTML = result;
+}
+
+function num_multiples() {
+
+    var num_fld = document.getElementById("num").value;
+    var result = "";
+
+    for(i = 1; i < 21; i++) {
+	if (i == 1) {
+	    result = ("<tr>");
+	}
+	if ((i == 5) || (i == 9) || (i == 13) || (i == 17)) {
+	    result += "</tr><tr>";
+	}
+	result += "<td>&nbsp;&nbsp;";
+	var num = num_fld * i;
+	result += num;
+	result += "&nbsp;&nbsp;</td>";
+    }
+    result += "</tr>";
+    var title = "Table: ";
+    document.getElementById("num_table").innerHTML = title + "<br />" + result;
+}
+
+</script>
+
+<h3> Data 608 Project 5 </h3>
+<br />
+<br />
+
+<h4> Part 1 </h4>
+<h5> Reverse a word </h5>
+
+<form>
+<div>
+
+<div>
+<table>
+<tr>
+<td>Enter a Word to reverse: </td>
+<td><input id="word" type="text"/></td>
+<td><input id="reverse" type="button" value="reverse" onclick="reverse_string()"/></td>
+</tr>
+</table>
+</div>
+
+<br />
+<br />
+<div id="rev_word">
+</div>
+
+<br />
+<br />
+<br />
+<br />
+
+<h5>Table with the first 20 multiples of a number, in order 5x4 </h5>
+<div>
+<table>
+<tr>
+<td>Enter a Number to print multiples table: </td>
+<td><input id="num" type="number"/></td>
+<td><input id="number" type="button" value="multiples" onclick="num_multiples()"/></td>
+</tr>
+</table>
+</div>
+
+<br />
+<br />
+<div>
+<table id="num_table">
+</table>
+</div>
+
+</div>
+</form>
+</body>
+
+</html>

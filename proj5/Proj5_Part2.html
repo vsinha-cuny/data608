@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" charset="utf-8">
+<!--
+    Data 608 Project 5
+    Vikas Sinha
+    11/19/2018
+-->
+
+<head>
+<title>Intro to JS in a Browser</title>
+
+<script type="text/javascript" src="https://d3js.org/d3.v3.min.js" charset="utf-8">
+</script>
+
+<style>
+	table {
+	    margin-left: 100px;
+	    border: 1px solid black;
+	    border-collapse:collapse;
+	    width:75%;
+	}
+
+	tr,td {
+	    border: 2px solid black;
+	}
+</style>
+</head>
+
+<body>
+<h3> Data 608 Project 5 </h3>
+
+<h4> Part 2 </h4>
+<h5> Table for presidents.csv data using d3 parser </h5>
+
+<table id="display">
+</table>
+<br />
+
+<form>
+<div style="margin-left:100px">
+President Name: 
+<input id="president" type="text"/>
+<input id="information" type="button" value="Get Data" onclick="get_info()"/>
+</div>
+<div id="president_info" style="margin-left:100px">
+</div>
+</form>
+
+
+<script>
+d3.text("presidents.csv", function(data) {
+
+	var parsed_info = d3.csv.parseRows(data);
+	var display_data = d3.select("#display")
+		.selectAll("tr")
+		    .data(parsed_info)
+		    .enter()
+		.append("tr")
+
+		.selectAll("td")	
+		    .data(function(row_info) { return row_info; })
+		    .enter()
+		.append("td")
+		    .text(function(row_info) { return row_info; });
+});
+
+function get_info() {
+    
+    var name = document.getElementById("president").value;
+    var height = "";
+    var weight = "";
+    var result = "";
+
+    d3.csv("presidents.csv", function(data) {
+	    data.forEach(function(info) {
+		if (name == info.Name) {
+		    result = "Result: <br />";
+		    result += "Height: " + info.Height;
+		    result += "&nbsp;&nbsp;Weight: " + info.Weight;
+		    document.getElementById("president_info").innerHTML = result;
+		}
+	    });
+    });
+}
+
+</script>
+
+</body>
+
+</html>
