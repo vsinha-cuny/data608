@@ -5,8 +5,8 @@ library(ggplot2)
 
 csv1 <- "https://raw.githubusercontent.com/vsinha-cuny/data608/master/FinalProject/NHA_indicators2.csv"
 csv2 <- "https://raw.githubusercontent.com/vsinha-cuny/data608/master/FinalProject/Life_Expectancy.csv"
-csv1 <- "NHA_indicators2.csv"
-csv2 <- "Life_Expectancy.csv"
+#csv1 <- "NHA_indicators2.csv"
+#csv2 <- "Life_Expectancy.csv"
 
 df1 = read.csv(csv1, skip=0, sep=",", stringsAsFactors=F)
 df2 = read.csv(csv2, skip=1, sep=",", stringsAsFactors=F)
