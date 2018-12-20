@@ -3,30 +3,32 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-csv1 <- "https://raw.githubusercontent.com/vsinha-cuny/data608/master/FinalProject/NHA_indicators.csv"
+csv1 <- "https://raw.githubusercontent.com/vsinha-cuny/data608/master/FinalProject/NHA_indicators2.csv"
 csv2 <- "https://raw.githubusercontent.com/vsinha-cuny/data608/master/FinalProject/Life_Expectancy.csv"
-#csv1 <- "NHA_indicators.csv"
-#csv2 <- "Life_Expectancy.csv"
+csv1 <- "NHA_indicators2.csv"
+csv2 <- "Life_Expectancy.csv"
 
-df1 = read.csv(csv1, skip=8, sep="\t", stringsAsFactors=F)
+df1 = read.csv(csv1, skip=0, sep=",", stringsAsFactors=F)
 df2 = read.csv(csv2, skip=1, sep=",", stringsAsFactors=F)
 
 per_capita_exp <- function(df, cc) {
     c1 = filter(df, Countries == cc)
-    c1 = select(c1, X2000:X2010)
-    c3 = gather(c1[1,], Year, PerCapitaExp, X2000:X2010)
-    c4 = c1[2,] %>% select(X2000:X2005)
-    names(c4) = c("X2011", "X2012", "X2013", "X2014", "X2015", "X2016")
-    c4 = gather(c4, Year, PerCapitaExp, X2011:X2016)
-    df.exp = rbind(c3, c4) %>% drop_na()
-    df.exp$Year = seq(from=2000, to=2016, by=1)
+    c1 = select(c1, X2000:X2016)
+    c3 = gather(c1[1,], Year, PerCapitaExp, X2000:X2016)
+    #c4 = c1[2,] %>% select(X2000:X2005)
+    #names(c4) = c("X2011", "X2012", "X2013", "X2014", "X2015", "X2016")
+    #c4 = gather(c4, Year, PerCapitaExp, X2011:X2016)
+    #df.exp = rbind(c3, c4) %>% drop_na()
+    #df.exp$Year = seq(from=2000, to=2016, by=1)
+    df.exp = c3
     df.exp$PerCapitaExp = as.numeric(gsub(",", "", df.exp$PerCapitaExp))
     return(df.exp$PerCapitaExp)
 }
 
 life_expectancy <- function(df, cc) {
     df.hc = filter(df, Country == cc) %>% select(Year, Both.sexes)
-    df.hc = df.hc[order(Year, decreasing=T),]
+    #browser()
+    df.hc = df.hc[order(df.hc$Year, decreasing=F),]
     df.hc$Both.sexes = as.numeric(df.hc$Both.sexes)
     return(df.hc$Both.sexes)
 }
